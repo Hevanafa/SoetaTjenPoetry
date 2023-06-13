@@ -10,6 +10,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Date
 
 data class RawPoemData (
     val poems: ArrayList<Poem>
@@ -32,6 +37,14 @@ data class State (
 class StateViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(State())
     val uiStateFlow = _uiState.asStateFlow()
+
+    // minSdk should be set to 26
+    // Ref: https://stackoverflow.com/questions/25938560/
+    val input_format = DateTimeFormatter.ISO_DATE_TIME
+
+    // Ref: https://stackoverflow.com/questions/1459656/
+//    val output_format = SimpleDateFormat("dd-MM-yyyy HH:mm")
+    val output_format = SimpleDateFormat("dd MMM yyyy")
 
     fun setActiveId(newId: Int) {
         _uiState.update{
@@ -85,7 +98,18 @@ class StateViewModel : ViewModel() {
 
     @Composable
     fun getActivePoetTitle(): String {
-        return getState().poems.find { it.id == getState().activeId }?.title ?: ""
+        return getActivePoem()?.title ?: ""
+    }
+
+    @Composable
+    fun getReadableDatetime(): String {
+        val datetimeStr = getActivePoem()?.datetime ?: ""
+        if (datetimeStr.isEmpty())
+            return ""
+
+        val offsetDT = OffsetDateTime.parse(datetimeStr, input_format)
+        val datetime = Date.from(Instant.from(offsetDT))
+        return output_format.format(datetime)
     }
 
 }
