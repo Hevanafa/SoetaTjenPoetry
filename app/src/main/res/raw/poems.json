@@ -1,0 +1,20 @@
+{
+	"poems": [
+		{
+			"id": 1,
+			"title": "Menara Jam",
+			"poet": "Steven de Dichter",
+			"image": null,
+			"verses": "Memandang matahari;\nMobil bermondar-mandir;\nSenja semanis persik;\nMembawa satu tongkat dengan tangan kiri;\nMembawa satu tongkat dengan tangan kanan.\n\nLonceng telah datang;\nTak berani sebut namanya;\nMerangkul pundaknya;\nHanya merangkul tiga orang.\n\nTerkadang,\nBerpikir ingin menjadi capung;\nAtaupun kepik dengan kaki yang patah;\nTanpa pemimpin, Ingin melingkar di antara semut.",
+			"datetime": "2023-02-05T09:45:00Z"
+		},
+		{
+			"id": 2,
+			"title": "(Hanya) Kubus",
+			"poet": "Steven de Dichter",
+			"image": null,
+			"verses": "Biarkan kubus tenggelam\nAntara cairan merah\nLumurilah dengan lentera\nJadilah putih bersinar\n\nBerkuasalah kebahagiaan\nRaba-rabalah sinar-cahaya\nBiarkan matahari berlangsung\nDengan langit kebiruan\n\nLumurilah dengan tinta\nJadilah hitam menggelap\n\nJangan bicara!\nBiarkan kegelapan berlangsung\nBukan dari bulan ataupun bintang\nTetesan selalu jatuh ke bawah\nMenunggu mereka yang datang\natau tak datang",
+			"datetime": "2023-02-26T21:30:00Z"
+		}
+	]
+}
