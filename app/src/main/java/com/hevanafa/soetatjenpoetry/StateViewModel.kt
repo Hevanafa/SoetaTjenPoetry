@@ -1,6 +1,9 @@
 package com.hevanafa.soetatjenpoetry
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Base64
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -15,6 +18,7 @@ import java.time.Instant
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Date
+import java.util.Locale
 
 data class RawPoemData (
     val poems: ArrayList<Poem>
@@ -25,6 +29,7 @@ data class Poem (
     val title: String,
     val poet: String,
     val image: String?,
+    var parsedImage: Bitmap?,
     val verses: String,
     val datetime: String // GMT+7
 )
@@ -44,7 +49,7 @@ class StateViewModel : ViewModel() {
 
     // Ref: https://stackoverflow.com/questions/1459656/
 //    val output_format = SimpleDateFormat("dd-MM-yyyy HH:mm")
-    val output_format = SimpleDateFormat("dd MMM yyyy")
+    val output_format = SimpleDateFormat("dd MMM yyyy", Locale.UK)
 
     fun setActiveId(newId: Int) {
         _uiState.update{
@@ -60,11 +65,28 @@ class StateViewModel : ViewModel() {
                 .use { it.readText() }
 
             val parsed = Gson().fromJson(jsonStr, RawPoemData::class.java)
+
+            parsed.poems.forEach { poem ->
+                if (poem.image != null) {
+                    poem.parsedImage = loadImage(poem.image)
+                }
+            }
+
             _uiState.update {
                 it.copy(poems = parsed.poems)
             }
         } catch (ioex: IOException) {
             Log.e("LoadPoems", "Error when accessing poems.json: " + (ioex.localizedMessage ?: ""))
+        }
+    }
+
+    fun loadImage(base64String: String): Bitmap? {
+        return try {
+            val bytes = Base64.decode(base64String, Base64.DEFAULT)
+            BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+        } catch (ex: Exception) {
+            println("Unable to parse base64 image: " + ex.localizedMessage)
+            null
         }
     }
 

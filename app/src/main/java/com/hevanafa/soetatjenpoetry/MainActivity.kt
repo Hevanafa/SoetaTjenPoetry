@@ -5,10 +5,12 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -31,6 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -183,10 +186,16 @@ class MainActivity : ComponentActivity() {
         viewModel: StateViewModel,
         activePoem: Poem?
     ) {
-        Column (modifier = modifier,
+        Column (modifier = modifier.absolutePadding(left = 10.dp, right = 10.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             if (activePoem != null) {
+                if (activePoem.parsedImage != null) {
+                    Image(
+                        bitmap = activePoem.parsedImage!!.asImageBitmap(),
+                        contentDescription = "Image for " + activePoem.title)
+                }
+
                 Text(viewModel.getReadableDatetime())
                 Text( "By " + activePoem.poet, fontWeight = FontWeight.Bold)
                 Text(activePoem.verses)
