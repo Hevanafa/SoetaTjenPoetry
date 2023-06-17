@@ -15,6 +15,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -33,9 +36,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -88,7 +98,7 @@ class MainActivity : ComponentActivity() {
     }
 
 
-    @OptIn(ExperimentalMaterial3Api::class)
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalTextApi::class)
     @Composable
     fun BaseScaffold() {
         viewModel = viewModel()
@@ -103,6 +113,7 @@ class MainActivity : ComponentActivity() {
 
 //        navController.addOnDestinationChangedListener(NavController.OnDestinationChangedListener(navController, backStackEntry.first))
 
+        val poems = viewModel!!.getPoems()
         val activePoem: Poem? = viewModel!!.getActivePoem()
 
         Scaffold (topBar = {
@@ -111,22 +122,48 @@ class MainActivity : ComponentActivity() {
         }) { innerPadding ->
             NavHost(navController!!, Screens.Start.name) {
                 composable(Screens.Start.name) {
-                    Column(
-                        modifier = Modifier.padding(innerPadding),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    LazyVerticalGrid(
+                        modifier = Modifier.padding(innerPadding).absolutePadding(left = 10.dp, right = 10.dp),
+                        columns = GridCells.Fixed(2),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
 
-                        viewModel!!.getPoems().map {
+                        items(poems) { poem ->
                             Card(modifier = Modifier
                                 .fillMaxWidth()
-                                .height(60.dp)
+                                .height(100.dp)
                                 .clickable {
-                                    viewModel!!.setActiveId(it.id)
+                                    viewModel!!.setActiveId(poem.id)
                                     navController!!.navigate(Screens.PoemDetails.name)
                                 }, colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primaryContainer)) {
 
                                 Box(modifier = Modifier.fillMaxSize(),
                                     contentAlignment = Alignment.Center) {
-                                    Text(it.title)
+                                    if (poem.parsedImage != null) {
+                                        Image(
+                                            contentScale = ContentScale.Crop,
+                                            modifier = Modifier.fillMaxSize(),
+                                            bitmap = poem.parsedImage!!.asImageBitmap(),
+                                            contentDescription = poem.title
+                                        )
+
+                                        Text(poem.title,
+                                            modifier = Modifier.align(Alignment.BottomEnd).padding(10.dp),
+                                            color = Color.White,
+                                            style = TextStyle.Default.copy(
+                                                fontSize = 20.sp,
+                                                color = Color.Black,
+                                                drawStyle = Stroke(
+                                                    miter = 10f,
+                                                    width = 2f,
+                                                    join = StrokeJoin.Round
+                                                )
+                                            )
+                                        )
+                                    } else {
+                                        Text(poem.title)
+                                    }
                                 }
                             }
                         }
