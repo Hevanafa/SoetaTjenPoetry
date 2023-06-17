@@ -100,8 +100,6 @@ class StateViewModel : ViewModel() {
         return uiStateFlow.collectAsState().value
     }
 
-    // Todo: get the human-readable date & time
-
     @Composable
     fun getActiveId(): Int {
         return getState().activeId

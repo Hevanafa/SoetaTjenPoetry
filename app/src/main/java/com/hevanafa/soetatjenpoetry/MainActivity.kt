@@ -104,9 +104,6 @@ class MainActivity : ComponentActivity() {
         viewModel = viewModel()
         viewModel!!.loadPoems(applicationContext)
 
-
-
-
         navController = rememberNavController()
         val backStackEntry by navController!!.currentBackStackEntryAsState()
         val currentRoute = getCurrentRoute()
@@ -122,6 +119,11 @@ class MainActivity : ComponentActivity() {
         }) { innerPadding ->
             NavHost(navController!!, Screens.Start.name) {
                 composable(Screens.Start.name) {
+                    if (poems.isEmpty())
+                        Column(modifier = Modifier.padding(innerPadding)) {
+                            Text("This list is empty.  Make sure poems.json has been generated & included in res\\raw.")
+                        }
+
                     LazyVerticalGrid(
                         modifier = Modifier.padding(innerPadding).absolutePadding(left = 10.dp, right = 10.dp),
                         columns = GridCells.Fixed(2),
