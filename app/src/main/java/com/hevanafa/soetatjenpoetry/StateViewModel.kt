@@ -54,7 +54,6 @@ class StateViewModel : ViewModel() {
 //    val output_format = SimpleDateFormat("dd-MM-yyyy HH:mm")
     val output_format = SimpleDateFormat("dd MMM yyyy", Locale.UK)
 
-    @Composable
     fun loadPoems(context: Context) {
         try {
             val jsonStr = context.resources.openRawResource(R.raw.poems)

@@ -54,9 +54,9 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
 
 // https://mvnrepository.com/artifact/androidx.navigation/navigation-runtime-ktx
-    implementation("androidx.navigation:navigation-runtime-ktx:2.5.3")
+    implementation("androidx.navigation:navigation-runtime-ktx:2.6.0")
 // https://mvnrepository.com/artifact/androidx.navigation/navigation-compose
-    implementation("androidx.navigation:navigation-compose:2.5.3")
+    implementation("androidx.navigation:navigation-compose:2.6.0")
 
     // https://mvnrepository.com/artifact/com.google.code.gson/gson
     implementation("com.google.code.gson:gson:2.10.1")
