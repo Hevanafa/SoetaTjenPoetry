@@ -7,6 +7,9 @@ import android.util.Base64
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -51,12 +54,6 @@ class StateViewModel : ViewModel() {
 //    val output_format = SimpleDateFormat("dd-MM-yyyy HH:mm")
     val output_format = SimpleDateFormat("dd MMM yyyy", Locale.UK)
 
-    fun setActiveId(newId: Int) {
-        _uiState.update{
-            it.copy(activeId = newId)
-        }
-    }
-
     @Composable
     fun loadPoems(context: Context) {
         try {
@@ -72,9 +69,7 @@ class StateViewModel : ViewModel() {
                 }
             }
 
-            _uiState.update {
-                it.copy(poems = parsed.poems)
-            }
+            poems = parsed.poems
         } catch (ioex: IOException) {
             Log.e("LoadPoems", "Error when accessing poems.json: " + (ioex.localizedMessage ?: ""))
         }
@@ -90,40 +85,20 @@ class StateViewModel : ViewModel() {
         }
     }
 
-    @Composable
-    fun getPoems(): ArrayList<Poem> {
-        return getState().poems
-    }
+    var poems by mutableStateOf(arrayListOf<Poem>())
+        private set
 
-    @Composable
-    fun getState(): State {
-        return uiStateFlow.collectAsState().value
-    }
-
-    @Composable
-    fun getActiveId(): Int {
-        return getState().activeId
-    }
+    var activePoem = mutableStateOf<Poem?>(null)
+        get() = field
+        set(value) { field = value }
 
     fun unsetActivePoem() {
-        _uiState.update {
-            it.copy(activeId = -1)
-        }
-    }
-
-    @Composable
-    fun getActivePoem(): Poem? {
-        return getState().poems.find { it.id == getState().activeId }
-    }
-
-    @Composable
-    fun getActivePoetTitle(): String {
-        return getActivePoem()?.title ?: ""
+        activePoem.value = null
     }
 
     @Composable
     fun getReadableDatetime(): String {
-        val datetimeStr = getActivePoem()?.datetime ?: ""
+        val datetimeStr = activePoem.value?.datetime ?: ""
         if (datetimeStr.isEmpty())
             return ""
 

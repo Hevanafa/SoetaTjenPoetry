@@ -34,6 +34,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -108,10 +109,9 @@ class MainActivity : ComponentActivity() {
         val backStackEntry by navController!!.currentBackStackEntryAsState()
         val currentRoute = getCurrentRoute()
 
-//        navController.addOnDestinationChangedListener(NavController.OnDestinationChangedListener(navController, backStackEntry.first))
+        // navController.addOnDestinationChangedListener(NavController.OnDestinationChangedListener(navController, backStackEntry.first))
 
-        val poems = viewModel!!.getPoems()
-        val activePoem: Poem? = viewModel!!.getActivePoem()
+//        val activePoem: Poem? = viewModel!!.getActivePoem()
 
         Scaffold (topBar = {
             MainTopBar(
@@ -126,8 +126,7 @@ class MainActivity : ComponentActivity() {
                     StartScreen(
                         navController = navController!!,
                         viewModel = viewModel!!,
-                        baseModifier = Modifier.padding(innerPadding),
-                        poems = poems
+                        baseModifier = Modifier.padding(innerPadding)
                     )
                 }
 
@@ -137,8 +136,7 @@ class MainActivity : ComponentActivity() {
                             .padding(innerPadding)
                             .fillMaxWidth()
                             .verticalScroll(rememberScrollState()),
-                        viewModel = viewModel!!,
-                        activePoem = activePoem
+                        viewModel = viewModel!!
                     )
                 }
             }

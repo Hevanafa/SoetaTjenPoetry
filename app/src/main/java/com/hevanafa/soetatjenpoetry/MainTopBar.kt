@@ -18,7 +18,7 @@ fun MainTopBar(
     canNavigateBack: Boolean,
     currentScreen: Screens
 ) {
-    val activePoem: Poem? = viewModel.getActivePoem()
+    val activePoem = viewModel.activePoem.value
 
     TopAppBar(
         title = { Text(
