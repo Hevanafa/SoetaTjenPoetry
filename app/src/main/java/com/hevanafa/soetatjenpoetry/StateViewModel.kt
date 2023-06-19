@@ -6,15 +6,12 @@ import android.graphics.BitmapFactory
 import android.util.Base64
 import android.util.Log
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.google.gson.Gson
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.time.Instant
@@ -46,7 +43,7 @@ class StateViewModel : ViewModel() {
 //    val output_format = SimpleDateFormat("dd-MM-yyyy HH:mm")
     val output_format = SimpleDateFormat("dd MMM yyyy", Locale.UK)
 
-    var poems by mutableStateOf(arrayListOf<Poem>())
+    var poems = mutableStateListOf<Poem>()
         private set
 
     var activePoem = mutableStateOf<Poem?>(null)
@@ -67,7 +64,7 @@ class StateViewModel : ViewModel() {
                 }
             }
 
-            poems = parsed.poems
+            poems.addAll(parsed.poems)
         } catch (ioex: IOException) {
             Log.e("LoadPoems", "Error when accessing poems.json: " + (ioex.localizedMessage ?: ""))
         }
