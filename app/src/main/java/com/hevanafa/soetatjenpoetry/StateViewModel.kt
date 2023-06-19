@@ -37,15 +37,7 @@ data class Poem (
     val datetime: String // GMT+7
 )
 
-data class State (
-    val poems: ArrayList<Poem> = arrayListOf(),
-    val activeId: Int = -1
-)
-
 class StateViewModel : ViewModel() {
-    private val _uiState = MutableStateFlow(State())
-    val uiStateFlow = _uiState.asStateFlow()
-
     // minSdk should be set to 26
     // Ref: https://stackoverflow.com/questions/25938560/
     val input_format = DateTimeFormatter.ISO_DATE_TIME
@@ -53,6 +45,13 @@ class StateViewModel : ViewModel() {
     // Ref: https://stackoverflow.com/questions/1459656/
 //    val output_format = SimpleDateFormat("dd-MM-yyyy HH:mm")
     val output_format = SimpleDateFormat("dd MMM yyyy", Locale.UK)
+
+    var poems by mutableStateOf(arrayListOf<Poem>())
+        private set
+
+    var activePoem = mutableStateOf<Poem?>(null)
+        get() = field
+        set(value) { field = value }
 
     fun loadPoems(context: Context) {
         try {
@@ -83,13 +82,6 @@ class StateViewModel : ViewModel() {
             null
         }
     }
-
-    var poems by mutableStateOf(arrayListOf<Poem>())
-        private set
-
-    var activePoem = mutableStateOf<Poem?>(null)
-        get() = field
-        set(value) { field = value }
 
     fun unsetActivePoem() {
         activePoem.value = null
