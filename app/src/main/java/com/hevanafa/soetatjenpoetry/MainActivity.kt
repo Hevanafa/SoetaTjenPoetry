@@ -98,7 +98,7 @@ class MainActivity : ComponentActivity() {
     }
 
 
-    @OptIn(ExperimentalMaterial3Api::class, ExperimentalTextApi::class)
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun BaseScaffold() {
         viewModel = viewModel()

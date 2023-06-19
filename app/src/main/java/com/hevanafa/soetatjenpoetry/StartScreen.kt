@@ -25,8 +25,10 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -34,6 +36,67 @@ import androidx.navigation.NavHostController
 @OptIn(ExperimentalTextApi::class)
 @Composable
 fun StartScreen(
+    navController: NavHostController,
+    viewModel: StateViewModel,
+    poems: ArrayList<Poem>,
+    baseModifier: Modifier
+) {
+    if (poems.isEmpty())
+        Column(modifier = baseModifier ) {
+            Text("This list is empty.  Make sure poems.json has been generated & included in res\\raw.")
+        }
+
+    LazyVerticalGrid(
+        modifier = baseModifier
+            .absolutePadding(left = 10.dp, right = 10.dp),
+        columns = GridCells.Fixed(2),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+
+        items(poems) { poem ->
+            Card(modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    viewModel.setActiveId(poem.id)
+                    navController.navigate(Screens.PoemDetails.name)
+                }, colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primaryContainer)
+            ) {
+
+                Column(
+                    modifier = Modifier.fillMaxSize().padding(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)) {
+
+                    val imageModifier = Modifier.fillMaxWidth()
+
+                    if (poem.parsedImage != null) {
+                        Image(
+                            modifier = imageModifier,
+                            bitmap = poem.parsedImage!!.asImageBitmap(),
+                            contentDescription = poem.title
+                        )
+                    } else {
+                        Image(
+                            modifier = imageModifier,
+                            painter = painterResource(id = R.drawable.poem_no_image),
+                            contentDescription = poem.title
+                        )
+                    }
+
+                    Text(poem.title,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = MaterialTheme.typography.bodyLarge.fontSize)
+                }
+
+
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalTextApi::class)
+@Composable
+fun StartScreenLegacy(
     navController: NavHostController,
     viewModel: StateViewModel,
     poems: ArrayList<Poem>,
