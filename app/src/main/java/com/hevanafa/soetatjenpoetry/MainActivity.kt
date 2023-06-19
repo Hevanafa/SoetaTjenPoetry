@@ -147,28 +147,5 @@ class MainActivity : ComponentActivity() {
 
 
 
-    @Composable
-    fun PoemDetailsView(
-        modifier: Modifier,
-        viewModel: StateViewModel,
-        activePoem: Poem?
-    ) {
-        Column (modifier = modifier.absolutePadding(left = 10.dp, right = 10.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            if (activePoem != null) {
-                if (activePoem.parsedImage != null) {
-                    Image(
-                        bitmap = activePoem.parsedImage!!.asImageBitmap(),
-                        contentDescription = "Image for " + activePoem.title)
-                }
 
-                Text(viewModel.getReadableDatetime())
-                Text( "By " + activePoem.poet, fontWeight = FontWeight.Bold)
-                Text(activePoem.verses)
-            } else {
-                Text("Sorry, this poem isn't ready at the moment!")
-            }
-        }
-    }
 }
