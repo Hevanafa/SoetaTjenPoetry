@@ -114,62 +114,21 @@ class MainActivity : ComponentActivity() {
         val activePoem: Poem? = viewModel!!.getActivePoem()
 
         Scaffold (topBar = {
-            MainTopBar(navController = navController!!, viewModel = viewModel!!)
-
+            MainTopBar(
+                navController = navController!!,
+                viewModel = viewModel!!,
+                canNavigateBack = getCanNavigateBack(),
+                currentScreen = getCurrentScreen()
+            )
         }) { innerPadding ->
             NavHost(navController!!, Screens.Start.name) {
                 composable(Screens.Start.name) {
-                    if (poems.isEmpty())
-                        Column(modifier = Modifier.padding(innerPadding)) {
-                            Text("This list is empty.  Make sure poems.json has been generated & included in res\\raw.")
-                        }
-
-                    LazyVerticalGrid(
-                        modifier = Modifier.padding(innerPadding).absolutePadding(left = 10.dp, right = 10.dp),
-                        columns = GridCells.Fixed(2),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-
-                        items(poems) { poem ->
-                            Card(modifier = Modifier
-                                .fillMaxWidth()
-                                .height(100.dp)
-                                .clickable {
-                                    viewModel!!.setActiveId(poem.id)
-                                    navController!!.navigate(Screens.PoemDetails.name)
-                                }, colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primaryContainer)) {
-
-                                Box(modifier = Modifier.fillMaxSize(),
-                                    contentAlignment = Alignment.Center) {
-                                    if (poem.parsedImage != null) {
-                                        Image(
-                                            contentScale = ContentScale.Crop,
-                                            modifier = Modifier.fillMaxSize(),
-                                            bitmap = poem.parsedImage!!.asImageBitmap(),
-                                            contentDescription = poem.title
-                                        )
-
-                                        Text(poem.title,
-                                            modifier = Modifier.align(Alignment.BottomEnd).padding(10.dp),
-                                            color = Color.White,
-                                            style = TextStyle.Default.copy(
-                                                fontSize = 20.sp,
-                                                color = Color.Black,
-                                                drawStyle = Stroke(
-                                                    miter = 10f,
-                                                    width = 2f,
-                                                    join = StrokeJoin.Round
-                                                )
-                                            )
-                                        )
-                                    } else {
-                                        Text(poem.title)
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    StartScreen(
+                        navController = navController!!,
+                        viewModel = viewModel!!,
+                        baseModifier = Modifier.padding(innerPadding),
+                        poems = poems
+                    )
                 }
 
                 composable(Screens.PoemDetails.name) {
@@ -186,38 +145,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun MainTopBar(
-        viewModel: StateViewModel,
-        navController: NavController
-    ) {
-        val activePoem: Poem? = viewModel.getActivePoem()
-        val currentScreen = getCurrentScreen()
 
-        TopAppBar(
-            title = { Text(
-                when (currentScreen) {
-                    Screens.PoemDetails -> activePoem?.title ?: ""
-                    Screens.Start -> "Steven de Dichter's Poetry Collection"
-                    else -> { currentScreen.name }
-                }
-            ) },
-            navigationIcon = {
-                if (getCanNavigateBack()) {
-                    IconButton(onClick = {
-                        navController.navigateUp()
-                        viewModel.unsetActivePoem()
-                    }) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "Back"
-                        )
-                    }
-                }
-            }
-        )
-    }
 
     @Composable
     fun PoemDetailsView(
